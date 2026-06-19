@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halaman Login Glassmorphism</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: url('background_new.png') no-repeat center center;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #140727; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 2s ease, visibility 2s ease;
+            opacity: 1;
+            visibility: visible;
+        }
+        .loader-wrapper.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #a755d4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .wrapper {
+            width: 420px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            color: #fff;
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .wrapper h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .input-box {
+            position: relative;
+            width: 100%;
+            height: 50px;
+            margin-bottom: 35px; 
+        }
+
+        .input-box input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            outline: none;
+            border-radius: 40px;
+            font-size: 15px;
+            color: #fff;
+            padding: 20px 45px 20px 20px;
+            transition: 0.3s ease;
+        }
+
+        .input-box input::placeholder {
+            color: #e0e0e0;
+        }
+
+        .input-box input:focus {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .input-box i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+        }
+
+        .error-text {
+            color: #ff4d4d; 
+            font-size: 13px;
+            font-weight: 500;
+            position: absolute;
+            bottom: -22px;
+            left: 15px;
+            display: none; 
+        }
+
+        .input-box.error input {
+            border-color: #ff4d4d; 
+            background: rgba(255, 77, 77, 0.1);
+        }
+
+        .input-box.error .error-text {
+            display: block; 
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .remember-forgot label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .remember-forgot label input {
+            accent-color: #fff;
+            margin-right: 6px;
+        }
+
+        .remember-forgot a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .remember-forgot a:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            width: 100%;
+            height: 45px;
+            background: #fff;
+            border: none;
+            outline: none;
+            border-radius: 40px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #f1f1f1;
+            transform: scale(1.02);
+        }
+
+        .register-link {
+            font-size: 14px;
+            margin-top: 25px;
+        }
+
+        .register-link p a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .register-link p a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="loader-wrapper">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="wrapper">
+        <form id="loginForm">
+            <h1>Login</h1>
+
+            <div class="input-box" id="usernameGroup">
+                <input type="text" id="email" placeholder="Email" required>
+                <i class='bx bxs-user'></i>
+            </div>
+
+            <div class="input-box">
+                <input type="password" id="password" placeholder="Password" required>
+                <i class='bx bxs-lock-alt'></i>
+            </div>
+
+            <div class="remember-forgot">
+                <label><input type="checkbox"> Remember me</label>
+                <a href="#">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn">Login</button>
+
+            <div class="register-link">
+                <p>Don't have an account? <a onclick="changePage('register.html')">Register</a></p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader-wrapper');
+            loader.classList.add('fade-out');
+        });
+
+        function changePage(url) {
+            const loader = document.querySelector('.loader-wrapper');
+            loader.classList.remove('fade-out'); 
+            
+            setTimeout(() => {
+                window.location.href = url; 
+            }, 1500); 
+        }
+
+        const form = document.getElementById('loginForm');
+        
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); 
+            // SETELAH BERHASIL LOGIN, DIKEMBALIKAN KE INDEX.HTML (SPIN)
+            alert("Login Berhasil! Selamat bermain.");
+            changePage('index.html');
+        });
+    </script>
+
+</body>
+</html>

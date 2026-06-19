@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin the Wheel - Hadiah Keberuntungan</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #140727; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 2s ease, visibility 2s ease;
+            opacity: 1;
+            visibility: visible;
+        }
+        .loader-wrapper.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #a755d4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        h1 {
+            margin-bottom: 5px;
+            font-size: 2.2rem;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            color: #ffdf00;
+            text-align: center;
+        }
+
+        p {
+            margin-bottom: 25px;
+            color: #eee;
+            text-align: center;
+            font-size: 0.95rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 85vw;
+            height: 85vw;
+            max-width: 360px;
+            max-height: 360px;
+            margin-bottom: 30px;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 35px solid #ff3366;
+            z-index: 10;
+            filter: drop-shadow(0 4px 5px rgba(0,0,0,0.5));
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 0 10px rgba(45, 45, 68, 0.9);
+            transition: transform 5s cubic-bezier(0.1, 0.8, 0.1, 1);
+        }
+
+        .spin-btn {
+            background: linear-gradient(45deg, #ff3366, #ff6633);
+            border: none;
+            color: white;
+            padding: 12px 35px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 51, 102, 0.5);
+            transition: all 0.2s ease;
+        }
+
+        .spin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 51, 102, 0.7);
+        }
+
+        .spin-btn:disabled {
+            background: #555;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .popup-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .popup-box {
+            background: rgba(30, 20, 50, 0.9);
+            border: 2px solid #ffdf00;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 35px 25px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            width: 85%;
+            max-width: 340px;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .popup-overlay.show .popup-box {
+            transform: scale(1);
+        }
+
+        .popup-icon {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+        }
+
+        .popup-box h2 {
+            color: #ffdf00;
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .popup-box p {
+            color: #ddd;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .popup-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s ease;
+            margin-bottom: 10px;
+        }
+
+        .popup-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .btn-claim {
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+            box-shadow: 0 5px 15px rgba(56, 239, 125, 0.4);
+        }
+
+        .btn-retry {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4);
+        }
+
+        .btn-login {
+            background: linear-gradient(45deg, #8a2387, #e94057, #f27121);
+            box-shadow: 0 5px 15px rgba(233, 64, 87, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="loader-wrapper">
+        <div class="spinner"></div>
+    </div>
+
+    <h1>Roda Keberuntungan</h1>
+    <p>Coba peruntunganmu hari ini dan menangkan hadiahnya!</p>
+
+    <div class="wheel-container">
+        <div class="pointer"></div>
+        <canvas id="wheel" width="500" height="500"></canvas>
+    </div>
+
+    <button class="spin-btn" id="spinBtn" onclick="spinWheel()">SPIN SEKARANG</button>
+
+    <div class="popup-overlay" id="customPopupOverlay">
+        <div class="popup-box">
+            
+            <div id="viewResult">
+                <div class="popup-icon" id="popupIcon">🎉</div>
+                <h2 id="popupTitle">Selamat!</h2>
+                <p id="prizeText">Kamu mendapatkan...</p>
+                <button id="claimBtn" class="popup-btn btn-claim" onclick="claimPrize()">Claim Hadiah</button>
+                <button id="retryBtn" class="popup-btn btn-retry" onclick="mainLagi()">Main Lagi</button>
+            </div>
+
+            <div id="viewLogin" style="display: none;">
+                <div class="popup-icon">🔑</div>
+                <h2>Perlu Login</h2>
+                <p>Silakan melakukan pendaftaran atau masuk akun terlebih dahulu untuk menyimpan klaim hadiah Anda!</p>
+                <button class="popup-btn btn-login" onclick="goToLoginPage()">Oke, Login Sekarang</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader-wrapper');
+            loader.classList.add('fade-out');
+        });
+
+        function changePage(url) {
+            const loader = document.querySelector('.loader-wrapper');
+            loader.classList.remove('fade-out'); 
+            setTimeout(() => {
+                window.location.href = url; 
+            }, 2000);
+        }
+
+        const canvas = document.getElementById("wheel");
+        const ctx = canvas.getContext("2d");
+        const spinBtn = document.getElementById("spinBtn");
+        
+        const popupOverlay = document.getElementById("customPopupOverlay");
+        const viewResult = document.getElementById("viewResult");
+        const viewLogin = document.getElementById("viewLogin");
+        
+        const claimBtn = document.getElementById("claimBtn");
+        const retryBtn = document.getElementById("retryBtn");
+        const popupTitle = document.getElementById("popupTitle");
+        const popupIcon = document.getElementById("popupIcon");
+        const prizeText = document.getElementById("prizeText");
+
+        const prizes = ["Zonk", "$1", "$10", "$50", "$100", "$200"];
+        const colors = ["#e74c3c", "#3498db", "#9b59b6", "#e67e22", "#2ecc71", "#f1c40f"];
+        const probabilities = [50, 25, 15, 6, 3.5, 0.5]; 
+
+        const numSegments = prizes.length;
+        const segmentAngle = (2 * Math.PI) / numSegments;
+        let currentRotation = 0;
+        let isSpinning = false;
+
+        function drawWheel() {
+            const radius = canvas.width / 2;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < numSegments; i++) {
+                const angle = i * segmentAngle - Math.PI / 2;
+
+                ctx.beginPath();
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius, angle, angle + segmentAngle);
+                ctx.fillStyle = colors[i];
+                ctx.fill();
+                ctx.stroke();
+                ctx.strokeStyle = "#fff";
+                ctx.lineWidth = 2;
+
+                ctx.save();
+                ctx.translate(radius, radius);
+                ctx.rotate(angle + segmentAngle / 2);
+                
+                ctx.textAlign = "right";
+                ctx.textBaseline = "middle";
+                ctx.fillStyle = "#fff";
+                ctx.font = "bold 24px Arial";
+                ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
+                ctx.shadowBlur = 4;
+                
+                ctx.fillText(prizes[i], radius - 40, 0); 
+                ctx.restore();
+            }
+
+            ctx.beginPath();
+            ctx.arc(radius, radius, 25, 0, 2 * Math.PI);
+            ctx.fillStyle = "#fff";
+            ctx.fill();
+        }
+
+        drawWheel();
+
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+            spinBtn.disabled = true;
+
+            let winningIndex = 0;
+            const rand = Math.random() * 100;
+            let cumulativeProbability = 0;
+
+            for (let i = 0; i < probabilities.length; i++) {
+                cumulativeProbability += probabilities[i];
+                if (rand <= cumulativeProbability) {
+                    winningIndex = i;
+                    break;
+                }
+            }
+
+            const baseSpins = 5 * 360; 
+            const targetAngleWithinCircle = 360 - ((winningIndex + 0.5) * (360 / numSegments));
+            const currentCircleDegrees = currentRotation % 360;
+            
+            let additionalDegrees = targetAngleWithinCircle - currentCircleDegrees;
+            if (additionalDegrees <= 0) {
+                additionalDegrees += 360;
+            }
+            
+            const totalTargetDegrees = currentRotation + baseSpins + additionalDegrees;
+            currentRotation = totalTargetDegrees;
+            
+            canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+            setTimeout(() => {
+                showResult(prizes[winningIndex]);
+            }, 5000);
+        }
+
+        function showResult(prize) {
+            viewResult.style.display = "block";
+            viewLogin.style.display = "none";
+
+            if (prize === "Zonk") {
+                popupIcon.innerText = "😢";
+                popupTitle.innerText = "Yahhh! Gagal";
+                prizeText.innerText = "Kamu mendapatkan Zonk. Jangan menyerah, ayo main lagi!";
+                
+                claimBtn.style.display = "none";  
+                retryBtn.style.display = "block"; 
+            } else {
+                popupIcon.innerText = "🎉";
+                popupTitle.innerText = "Selamat! Menang";
+                prizeText.innerText = `Kamu berhasil memenangkan hadiah senilai ${prize}!`;
+                
+                claimBtn.style.display = "block"; 
+                retryBtn.style.display = "none";  
+            }
+
+            popupOverlay.classList.add("show");
+        }
+
+        function mainLagi() {
+            popupOverlay.classList.remove("show");
+            setTimeout(() => {
+                isSpinning = false;
+                spinBtn.disabled = false;
+            }, 300);
+        }
+
+        function claimPrize() {
+            viewResult.style.display = "none";
+            viewLogin.style.display = "block";
+        }
+
+        // --- MENGARAHKAN KE LOGIN.HTML ---
+        function goToLoginPage() {
+            popupOverlay.classList.remove("show");
+            setTimeout(() => {
+                changePage('login.html'); 
+            }, 300);
+        }
+    </script>
+</body>
+</html>
